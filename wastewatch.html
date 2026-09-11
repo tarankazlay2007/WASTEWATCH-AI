@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WasteWatch AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10231A;
+    --ink-soft:#1A362A;
+    --paper:#F2EEE2;
+    --paper-dim:#E7E1D0;
+    --text:#1B1B16;
+    --text-dim:#5B5A4E;
+    --line: rgba(27,27,22,0.14);
+
+    --plastic:#2F6FED;
+    --paper-cat:#C98A2B;
+    --glass:#1F8A70;
+    --metal:#6B7280;
+    --organic:#6E7B3A;
+    --ewaste:#7C3AED;
+
+    --radius: 4px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  p{ margin:0; }
+  a{ color:inherit; }
+  button{ font-family:inherit; }
+  :focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--ink);
+    color:var(--paper);
+    border-bottom:1px solid rgba(242,238,226,0.12);
+  }
+  .nav-inner{
+    max-width:1080px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600; font-size:18px;
+    cursor:pointer; background:none; border:none; color:inherit; padding:0;
+  }
+  .brand-mark{
+    width:22px; height:22px; border-radius:50%;
+    background: conic-gradient(var(--plastic) 0 60deg, var(--paper-cat) 60deg 120deg, var(--glass) 120deg 180deg, var(--metal) 180deg 240deg, var(--organic) 240deg 300deg, var(--ewaste) 300deg 360deg);
+    flex-shrink:0;
+  }
+  nav.links{ display:flex; gap:4px; }
+  nav.links button{
+    background:none; border:none; color:var(--paper);
+    opacity:0.7; font-size:14px; padding:8px 14px; border-radius:999px;
+    cursor:pointer; transition:opacity .15s, background .15s;
+  }
+  nav.links button:hover{ opacity:1; }
+  nav.links button[aria-current="page"]{
+    opacity:1; background:rgba(242,238,226,0.12);
+  }
+
+  main{ max-width:1080px; margin:0 auto; padding:0 24px; }
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  /* ---------- HOME ---------- */
+  .hero{
+    padding:88px 0 64px;
+    display:grid; grid-template-columns: 1.1fr 0.9fr; gap:56px; align-items:center;
+  }
+  .eyebrow{ color:var(--text-dim); font-size:14px; margin-bottom:18px; }
+  .hero h1{ font-size:56px; line-height:1.04; }
+  .hero-sub{ margin-top:22px; font-size:17px; line-height:1.6; color:var(--text-dim); max-width:44ch; }
+  .hero-actions{ margin-top:32px; display:flex; gap:12px; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 22px; border-radius:999px; font-size:15px; font-weight:500;
+    cursor:pointer; border:1px solid transparent; transition:transform .12s ease, background .15s;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{ background:var(--ink); color:var(--paper); }
+  .btn-primary:hover{ background:var(--ink-soft); }
+  .btn-ghost{ background:transparent; color:var(--text); border-color:var(--line); }
+  .btn-ghost:hover{ background:var(--paper-dim); }
+
+  .hero-diagram{
+    background:var(--ink); color:var(--paper);
+    border-radius:8px; padding:28px;
+  }
+  .flow-step{ display:flex; align-items:center; gap:14px; padding:12px 0; }
+  .flow-step + .flow-step{ border-top:1px solid rgba(242,238,226,0.14); }
+  .flow-num{
+    width:26px; height:26px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-family:'Space Grotesk',sans-serif;
+    background:rgba(242,238,226,0.12);
+  }
+  .flow-label{ font-size:14.5px; }
+  .flow-label b{ font-weight:600; }
+
+  .section{ padding:56px 0; border-top:1px solid var(--line); }
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px; gap:24px;}
+  .section-head h2{ font-size:26px; }
+  .section-head p{ color:var(--text-dim); font-size:14.5px; max-width:36ch; }
+
+  .cat-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+  .cat-card{
+    border:1px solid var(--line); border-radius:6px; padding:18px;
+    background:#fff;
+  }
+  .cat-dot{ width:10px; height:10px; border-radius:50%; margin-bottom:12px; }
+  .cat-card b{ display:block; font-size:15px; margin-bottom:4px; }
+  .cat-card span{ font-size:13px; color:var(--text-dim); }
+
+  footer{
+    border-top:1px solid var(--line); padding:32px 0 60px;
+    color:var(--text-dim); font-size:13px; display:flex; justify-content:space-between;
+  }
+
+  /* ---------- ANALYZE / UPLOAD ---------- */
+  .page-head{ padding:56px 0 8px; }
+  .page-head .eyebrow{ margin-bottom:10px; }
+  .page-head h1{ font-size:36px; }
+  .page-head p.lede{ margin-top:12px; color:var(--text-dim); font-size:15px; max-width:52ch; }
+
+  .analyze-wrap{ padding:36px 0 80px; display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start; }
+
+  .dropzone{
+    border:1.5px dashed var(--line); border-radius:8px;
+    background:#fff;
+    min-height:320px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:32px; cursor:pointer; position:relative; overflow:hidden;
+    transition:border-color .15s, background .15s;
+  }
+  .dropzone.drag{ border-color:var(--ink); background:var(--paper-dim); }
+  .dropzone img{ max-width:100%; max-height:260px; border-radius:6px; object-fit:contain; }
+  .dropzone-icon{
+    width:52px; height:52px; border-radius:50%; background:var(--paper-dim);
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px; font-size:22px;
+  }
+  .dropzone h3{ font-size:16px; margin-bottom:6px; }
+  .dropzone p{ font-size:13.5px; color:var(--text-dim); }
+  input[type="file"]{ display:none; }
+
+  .analyze-side h3{ font-size:15px; margin-bottom:14px; }
+  .steps-mini{ display:flex; flex-direction:column; gap:0; margin-bottom:28px; }
+  .steps-mini .flow-step{ padding:10px 0; }
+  .steps-mini .flow-step:first-child{ border-top:none; padding-top:0; }
+  .steps-mini{ border:none; }
+  .steps-mini .flow-num{ background:var(--paper-dim); color:var(--ink); }
+  .steps-mini .flow-step{ border-top:1px solid var(--line); }
+  .steps-mini .flow-step:first-child{ border-top:none; }
+  .steps-mini .flow-label{ color:var(--text); }
+
+  .analyze-btn-row{ display:flex; align-items:center; gap:14px; }
+  .file-name{ font-size:13px; color:var(--text-dim); }
+
+  /* ---------- RESULT ---------- */
+  .result-wrap{ padding:44px 0 80px; display:grid; grid-template-columns:0.9fr 1.1fr; gap:40px; }
+  .result-img{
+    border-radius:8px; overflow:hidden; background:var(--paper-dim);
+    min-height:320px; display:flex; align-items:center; justify-content:center;
+  }
+  .result-img img{ width:100%; height:100%; object-fit:cover; }
+
+  .result-card{
+    border:1px solid var(--line); border-radius:8px; padding:30px; background:#fff;
+  }
+  .result-type-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .result-type{ font-size:30px; font-family:'Space Grotesk',sans-serif; font-weight:600; }
+  .confidence-pill{
+    font-size:13px; padding:6px 12px; border-radius:999px; font-weight:500;
+    background:var(--paper-dim);
+  }
+  .confidence-bar-track{ height:6px; border-radius:999px; background:var(--paper-dim); margin:18px 0 24px; overflow:hidden; }
+  .confidence-bar-fill{ height:100%; border-radius:999px; transition:width .6s ease; }
+
+  .disposal-box{
+    border-left:3px solid var(--line); padding:16px 18px; border-radius:2px; background:var(--paper);
+    margin-bottom:22px;
+  }
+  .disposal-box .label{ font-size:12px; text-transform:none; color:var(--text-dim); margin-bottom:6px; }
+  .disposal-box .bin{ font-size:19px; font-family:'Space Grotesk',sans-serif; font-weight:600; }
+  .disposal-box .note{ font-size:13.5px; color:var(--text-dim); margin-top:6px; }
+
+  .result-actions{ display:flex; gap:12px; }
+
+  .bin-report-note{
+    border:1px solid var(--line); border-radius:8px; padding:40px; text-align:center;
+    margin:44px 0 80px; background:#fff;
+  }
+  .bin-report-note h2{ font-size:22px; margin-bottom:10px; }
+  .bin-report-note p{ color:var(--text-dim); font-size:14.5px; max-width:46ch; margin:0 auto; }
+
+  @media (max-width: 760px){
+    .hero{ grid-template-columns:1fr; padding-top:56px; }
+    .hero h1{ font-size:38px; }
+    .cat-grid{ grid-template-columns:repeat(2,1fr); }
+    .analyze-wrap, .result-wrap{ grid-template-columns:1fr; }
+    nav.links{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <button class="brand" onclick="showView('home')">
+      <span class="brand-mark"></span> WasteWatch AI
+    </button>
+    <nav class="links">
+      <button data-view="home" onclick="showView('home')" aria-current="page">Home</button>
+      <button data-view="analyze" onclick="showView('analyze')">Analyze Waste</button>
+      <button data-view="report" onclick="showView('report')">Report Bin</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HOME ============ -->
+  <section id="view-home" class="view active">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Campus waste sorting, made obvious</div>
+        <h1>Point your camera at trash.<br>Know exactly where it goes.</h1>
+        <p class="hero-sub">Upload a photo of a single item and WasteWatch AI identifies the material and tells you which bin it belongs in — so recyclables stop ending up in landfill by accident.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="showView('analyze')">Analyze an item</button>
+          <button class="btn btn-ghost" onclick="showView('report')">Report a full bin</button>
+        </div>
+      </div>
+      <div class="hero-diagram">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-label">Upload a photo of <b>one waste item</b></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-label">The model predicts a <b>waste category</b></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-label">You get a <b>confidence score</b></div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-label">And the <b>correct bin</b> to use</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Six categories, six bins</h2>
+        <p>Every prediction maps to one clear disposal instruction — no guessing at the bin.</p>
+      </div>
+      <div class="cat-grid" id="cat-grid"></div>
+    </div>
+
+    <footer>
+      <span>WasteWatch AI — a campus project</span>
+      <span>frontend / backend / model / dataset</span>
+    </footer>
+  </section>
+
+  <!-- ============ ANALYZE / UPLOAD ============ -->
+  <section id="view-analyze" class="view">
+    <div class="page-head">
+      <div class="eyebrow">Analyze Waste</div>
+      <h1>Upload one item</h1>
+      <p class="lede">Use a clear, well-lit photo with a single item in frame. Currently running in demo mode with sample predictions while the model is being trained.</p>
+    </div>
+
+    <div class="analyze-wrap">
+      <div>
+        <label for="file-input">
+          <div class="dropzone" id="dropzone">
+            <div id="dropzone-empty">
+              <div class="dropzone-icon">＋</div>
+              <h3>Drop an image, or click to browse</h3>
+              <p>JPG or PNG, one item per photo</p>
+            </div>
+            <img id="preview-img" style="display:none;">
+          </div>
+        </label>
+        <input type="file" id="file-input" accept="image/*">
+
+        <div class="analyze-btn-row" style="margin-top:18px;">
+          <button class="btn btn-primary" id="analyze-btn" disabled>Analyze</button>
+          <span class="file-name" id="file-name">No image selected</span>
+        </div>
+      </div>
+
+      <div class="analyze-side">
+        <h3>What happens next</h3>
+        <div class="steps-mini">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-label">Image is sent to the classifier</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-label">Model returns a category + confidence</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-label">You're shown the matching disposal bin</div>
+          </div>
+        </div>
+        <h3>Tips for a clean read</h3>
+        <p style="font-size:13.5px; color:var(--text-dim); line-height:1.6;">
+          Fill most of the frame with the item, avoid shadows across it, and keep the background plain where possible.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section id="view-result" class="view">
+    <div class="page-head">
+      <div class="eyebrow">Result</div>
+      <h1 id="result-heading">Here's what we found</h1>
+    </div>
+
+    <div class="result-wrap">
+      <div class="result-img"><img id="result-img"></div>
+
+      <div class="result-card">
+        <div class="result-type-row">
+          <div class="result-type" id="result-type">Plastic</div>
+          <div class="confidence-pill" id="result-confidence-pill">94% confidence</div>
+        </div>
+        <div class="confidence-bar-track">
+          <div class="confidence-bar-fill" id="confidence-bar-fill"></div>
+        </div>
+
+        <div class="disposal-box">
+          <div class="label">Put in</div>
+          <div class="bin" id="result-bin">Dry Waste Bin</div>
+          <div class="note" id="result-note">Recyclable — rinse before disposing if food residue is present.</div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn btn-primary" onclick="showView('analyze')">Analyze another item</button>
+          <button class="btn btn-ghost" onclick="showView('home')">Back to home</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REPORT BIN (stub, later phase) ============ -->
+  <section id="view-report" class="view">
+    <div class="bin-report-note">
+      <h2>Bin reporting is coming later</h2>
+      <p>This feature goes live once waste classification and the dashboard are working end to end. For now, focus is on the core analyze → result flow.</p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // ---------------------------------------------------------------
+  // Category reference data — mirrors the roadmap's disposal rules.
+  // This is the single source of truth the fake predictor and the
+  // "Six categories" grid both read from.
+  // ---------------------------------------------------------------
+  const CATEGORIES = {
+    plastic: { label:"Plastic",  color:"var(--plastic)",  bin:"Dry Waste Bin",         note:"Recyclable — rinse before disposing if food residue is present." },
+    paper:   { label:"Paper",    color:"var(--paper-cat)",bin:"Dry / Recyclable Bin",  note:"Flatten boxes and remove any tape before disposing." },
+    glass:   { label:"Glass",    color:"var(--glass)",    bin:"Glass Recycling Bin",   note:"Recyclable — handle broken pieces with care." },
+    metal:   { label:"Metal",    color:"var(--metal)",    bin:"Dry Waste Bin",         note:"Recyclable — empty cans and containers fully." },
+    organic: { label:"Organic",  color:"var(--organic)",  bin:"Wet Waste Bin",         note:"Compostable — keep separate from packaging." },
+    ewaste:  { label:"E-Waste",  color:"var(--ewaste)",   bin:"E-Waste Collection Point", note:"Never place in regular bins — drop off at the designated point." },
+  };
+
+  function renderCategoryGrid(){
+    const grid = document.getElementById('cat-grid');
+    grid.innerHTML = Object.values(CATEGORIES).map(c => `
+      <div class="cat-card">
+        <div class="cat-dot" style="background:${c.color}"></div>
+        <b>${c.label}</b>
+        <span>${c.bin}</span>
+      </div>
+    `).join('');
+  }
+  renderCategoryGrid();
+
+  // ---------------------------------------------------------------
+  // View switching
+  // ---------------------------------------------------------------
+  function showView(name){
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    document.querySelectorAll('nav.links button').forEach(b => {
+      if (b.dataset.view === name) b.setAttribute('aria-current','page');
+      else b.removeAttribute('aria-current');
+    });
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  // ---------------------------------------------------------------
+  // Upload + preview
+  // ---------------------------------------------------------------
+  const fileInput   = document.getElementById('file-input');
+  const dropzone     = document.getElementById('dropzone');
+  const previewImg   = document.getElementById('preview-img');
+  const emptyState   = document.getElementById('dropzone-empty');
+  const analyzeBtn   = document.getElementById('analyze-btn');
+  const fileNameLbl  = document.getElementById('file-name');
+
+  let selectedFile = null;
+
+  fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+  ['dragover','dragenter'].forEach(evt =>
+    dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('drag'); })
+  );
+  ['dragleave','drop'].forEach(evt =>
+    dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('drag'); })
+  );
+  dropzone.addEventListener('drop', e => {
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+
+  function handleFile(file){
+    if (!file) return;
+    selectedFile = file;
+    const url = URL.createObjectURL(file);
+    previewImg.src = url;
+    previewImg.style.display = 'block';
+    emptyState.style.display = 'none';
+    analyzeBtn.disabled = false;
+    fileNameLbl.textContent = file.name;
+  }
+
+  // ---------------------------------------------------------------
+  // Analyze button
+  //
+  // Demo mode right now (Step 2 of the roadmap: fake results just to
+  // prove the site works end to end). Once the Flask API from Step 4
+  // is live, swap runFakePrediction() for a real call — the commented
+  // block below shows the shape to use, unchanged on the result side.
+  // ---------------------------------------------------------------
+  analyzeBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
+    analyzeBtn.disabled = true;
+    analyzeBtn.textContent = 'Analyzing…';
+
+    const prediction = await runFakePrediction();
+
+    /* --- real backend version, once /predict exists ---
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+    const res = await fetch('/predict', { method:'POST', body:formData });
+    const prediction = await res.json(); // { category, confidence }
+    --------------------------------------------------- */
+
+    showResult(prediction, previewImg.src);
+
+    analyzeBtn.disabled = false;
+    analyzeBtn.textContent = 'Analyze';
+  });
+
+  function runFakePrediction(){
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const keys = Object.keys(CATEGORIES);
+        const key = keys[Math.floor(Math.random() * keys.length)];
+        const confidence = Math.floor(Math.random() * 16) + 82; // 82–97%
+        resolve({ category: key, confidence });
+      }, 900);
+    });
+  }
+
+  function showResult(prediction, imgSrc){
+    const cat = CATEGORIES[prediction.category];
+    document.getElementById('result-img').src = imgSrc;
+    document.getElementById('result-type').textContent = cat.label;
+    document.getElementById('result-type').style.color = cat.color;
+    document.getElementById('result-confidence-pill').textContent = prediction.confidence + '% confidence';
+    document.getElementById('result-bin').textContent = cat.bin;
+    document.getElementById('result-note').textContent = cat.note;
+
+    const fill = document.getElementById('confidence-bar-fill');
+    fill.style.width = '0%';
+    fill.style.background = cat.color;
+    requestAnimationFrame(() => { fill.style.width = prediction.confidence + '%'; });
+
+    showView('result');
+  }
+</script>
+
+</body>
+</html>
