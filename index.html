@@ -214,6 +214,254 @@
   }
   .bin-report-note h2{ font-size:22px; margin-bottom:10px; }
   .bin-report-note p{ color:var(--text-dim); font-size:14.5px; max-width:46ch; margin:0 auto; }
+/* ---------- GARBO CHATBOT ---------- */
+.garbo-widget {
+  position: fixed;
+  top: 96px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.garbo-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper);
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  pointer-events: none;
+}
+
+/* Floating button */
+.garbo-button {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+
+.garbo-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+/* Chat window */
+.garbo-chat {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+
+  width: 350px;
+  height: 470px;
+
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+
+  box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.garbo-chat.open {
+  display: flex;
+}
+
+/* Header */
+.garbo-header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.garbo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.garbo-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+
+  background: var(--paper);
+  color: var(--ink);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+}
+
+.garbo-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+}
+
+.garbo-status {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.garbo-close {
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Messages */
+.garbo-messages {
+  flex: 1;
+  padding: 16px;
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  background: var(--paper);
+}
+
+.garbo-message {
+  max-width: 82%;
+  padding: 10px 13px;
+
+  border-radius: 12px;
+
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.garbo-message.bot {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.garbo-message.user {
+  align-self: flex-end;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Quick questions */
+.garbo-quick {
+  padding: 10px 12px;
+
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+
+  border-top: 1px solid var(--line);
+}
+
+.garbo-quick button {
+  border: 1px solid var(--line);
+  background: #fff;
+
+  padding: 7px 10px;
+  border-radius: 999px;
+
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.garbo-quick button:hover {
+  background: var(--paper-dim);
+}
+
+/* Input */
+.garbo-input-area {
+  display: flex;
+  gap: 8px;
+
+  padding: 10px;
+
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
+.garbo-input {
+  flex: 1;
+
+  border: 1px solid var(--line);
+  border-radius: 999px;
+
+  padding: 10px 13px;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  outline: none;
+}
+
+.garbo-input:focus {
+  border-color: var(--ink);
+}
+
+.garbo-send {
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: var(--ink);
+  color: var(--paper);
+
+  cursor: pointer;
+}
+
+.garbo-send:hover {
+  background: var(--ink-soft);
+}
+
+/* Mobile: smaller offset for the button, and the chat window docks to the
+   bottom of the screen instead of dropping down from the corner button,
+   since a 350px popover won't fit below it on narrow screens */
+@media (max-width: 500px) {
+  .garbo-widget {
+    top: 76px;
+    right: 14px;
+  }
+
+  .garbo-chat {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    top: auto;
+    bottom: 14px;
+    width: auto;
+    height: 460px;
+  }
+}
+  
 
   @media (max-width: 760px){
     .hero{ grid-template-columns:1fr; padding-top:56px; }
@@ -221,6 +469,7 @@
     .cat-grid{ grid-template-columns:repeat(2,1fr); }
     .analyze-wrap, .result-wrap{ grid-template-columns:1fr; }
     nav.links{ display:none; }
+    .hero-actions{ flex-wrap:wrap; }
   }
 </style>
 </head>
@@ -382,6 +631,110 @@
 
 </main>
 
+<!-- ============ GARBO CHATBOT ============ -->
+<div class="garbo-widget">
+
+  <!-- Chat window -->
+  <div class="garbo-chat" id="garbo-chat">
+
+    <div class="garbo-header">
+
+      <div class="garbo-title">
+
+        <div class="garbo-avatar">
+          G
+        </div>
+
+        <div>
+          <div class="garbo-name">Garbo</div>
+          <div class="garbo-status">WasteWatch Assistant</div>
+        </div>
+
+      </div>
+
+      <button class="garbo-close" onclick="toggleGarbo()">
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- Messages -->
+    <div class="garbo-messages" id="garbo-messages">
+
+      <div class="garbo-message bot">
+        Hi! 👋 I'm Garbo, your WasteWatch assistant.
+        Ask me anything about waste disposal, recycling,
+        or using WasteWatch.
+      </div>
+
+      <div class="garbo-message bot">
+        For example, you can ask:
+        <br><br>
+        • Where should I throw a plastic bottle?
+        <br>
+        • What is e-waste?
+        <br>
+        • How do I report a full bin?
+      </div>
+
+    </div>
+
+
+    <!-- Quick questions -->
+    <div class="garbo-quick">
+
+      <button onclick="garboQuick('Where should plastic go?')">
+        Plastic
+      </button>
+
+      <button onclick="garboQuick('Where should glass go?')">
+        Glass
+      </button>
+
+      <button onclick="garboQuick('What is e-waste?')">
+        E-Waste
+      </button>
+
+    </div>
+
+
+    <!-- Input -->
+    <div class="garbo-input-area">
+
+      <input
+        type="text"
+        id="garbo-input"
+        class="garbo-input"
+        placeholder="Ask Garbo..."
+        onkeydown="if(event.key === 'Enter') sendGarboMessage()"
+      >
+
+      <button
+        class="garbo-send"
+        onclick="sendGarboMessage()"
+      >
+        ➤
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Floating button -->
+  <button
+    class="garbo-button"
+    onclick="toggleGarbo()"
+    aria-label="Open Garbo chatbot"
+  >
+    ♻️
+  </button>
+
+  <span class="garbo-label">Garbo</span>
+
+</div>
+
 <script>
   // ---------------------------------------------------------------
   // Category reference data — mirrors the roadmap's disposal rules.
@@ -511,6 +864,188 @@
     requestAnimationFrame(() => { fill.style.width = prediction.confidence + '%'; });
 
     showView('result');
+  }
+
+
+  // ---------------------------------------------------------------
+  // GARBO CHATBOT
+  // ---------------------------------------------------------------
+
+  function toggleGarbo() {
+
+    const chat = document.getElementById('garbo-chat');
+
+    chat.classList.toggle('open');
+
+    if (chat.classList.contains('open')) {
+      setTimeout(() => {
+        document.getElementById('garbo-input').focus();
+      }, 100);
+    }
+  }
+
+
+  function addGarboMessage(message, sender) {
+
+    const messages = document.getElementById('garbo-messages');
+
+    const div = document.createElement('div');
+
+    div.className = 'garbo-message ' + sender;
+
+    div.textContent = message;
+
+    messages.appendChild(div);
+
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+
+  function garboQuick(question) {
+
+    document.getElementById('garbo-input').value = question;
+
+    sendGarboMessage();
+  }
+
+
+  function getGarboResponse(message) {
+
+    const text = message.toLowerCase();
+
+
+    // PLASTIC
+    if (
+      text.includes('plastic') ||
+      text.includes('bottle') ||
+      text.includes('polythene')
+    ) {
+      return "Plastic items generally go into the Dry Waste Bin. Empty and rinse containers before disposal.";
+    }
+
+
+    // PAPER
+    if (
+      text.includes('paper') ||
+      text.includes('cardboard') ||
+      text.includes('box')
+    ) {
+      return "Paper and cardboard should go into the Dry / Recyclable Bin. Flatten cardboard boxes when possible.";
+    }
+
+
+    // GLASS
+    if (
+      text.includes('glass') ||
+      text.includes('jar')
+    ) {
+      return "Glass bottles and jars should go into the Glass Recycling Bin. Handle broken glass carefully.";
+    }
+
+
+    // METAL
+    if (
+      text.includes('metal') ||
+      text.includes('can') ||
+      text.includes('aluminium') ||
+      text.includes('aluminum')
+    ) {
+      return "Metal cans and containers should go into the Dry Waste Bin. Empty them before disposal.";
+    }
+
+
+    // ORGANIC
+    if (
+      text.includes('food') ||
+      text.includes('vegetable') ||
+      text.includes('fruit') ||
+      text.includes('organic') ||
+      text.includes('compost')
+    ) {
+      return "Food scraps and other compostable organic waste should go into the Wet Waste Bin.";
+    }
+
+
+    // E-WASTE
+    if (
+      text.includes('e-waste') ||
+      text.includes('ewaste') ||
+      text.includes('electronic') ||
+      text.includes('phone') ||
+      text.includes('battery') ||
+      text.includes('charger')
+    ) {
+      return "Electronic waste should NOT go into regular bins. Take it to a designated E-Waste Collection Point.";
+    }
+
+
+    // ANALYZE
+    if (
+      text.includes('analyze') ||
+      text.includes('analyse') ||
+      text.includes('photo') ||
+      text.includes('image')
+    ) {
+      return "Go to 'Analyze Waste' and upload a clear photo of one waste item. WasteWatch will identify its category and recommended bin.";
+    }
+
+
+    // REPORT
+    if (
+      text.includes('report') ||
+      text.includes('full bin') ||
+      text.includes('overflow')
+    ) {
+      return "You can use 'Report a Full Bin' from the homepage. This feature is currently under development.";
+    }
+
+
+    // GREETING
+    if (
+      text.includes('hello') ||
+      text.includes('hi') ||
+      text.includes('hey')
+    ) {
+      return "Hey! 👋 I'm Garbo. Ask me about waste disposal, recycling, or WasteWatch.";
+    }
+
+
+    // HELP
+    if (
+      text.includes('help') ||
+      text.includes('what can you do')
+    ) {
+      return "I can help you understand waste categories, recycling and which bin different waste belongs in.";
+    }
+
+
+    return "I'm not sure about that yet. Try asking me something like 'Where should I throw a plastic bottle?'";
+  }
+
+
+  function sendGarboMessage() {
+
+    const input = document.getElementById('garbo-input');
+
+    const message = input.value.trim();
+
+    if (!message) return;
+
+
+    // Show user's message
+    addGarboMessage(message, 'user');
+
+    input.value = '';
+
+
+    // Generate Garbo's response
+    setTimeout(() => {
+
+      const response = getGarboResponse(message);
+
+      addGarboMessage(response, 'bot');
+
+    }, 400);
   }
 </script>
 
