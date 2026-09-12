@@ -635,62 +635,253 @@
     margin-top:14px; font-size:12px; color:var(--text-dim); border-top:1px solid var(--line); padding-top:12px;
   }
 
-  /* ---------- ASSISTANT (chatbot) ---------- */
-  .assistant-launcher{
-    position:fixed; right:22px; bottom:22px; z-index:80;
-    width:56px; height:56px; border-radius:50%; border:none; cursor:pointer;
-    background:var(--ink); color:var(--paper); font-size:22px;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 18px rgba(16,35,26,0.28);
-    transition:transform .15s ease;
-  }
-  .assistant-launcher:hover{ transform:scale(1.05); }
-  .assistant-launcher .badge{
-    position:absolute; top:-2px; right:-2px; width:11px; height:11px; border-radius:50%;
-    background:var(--glass); border:2px solid var(--paper);
+  /* ---------- GARBO CHATBOT ---------- */
+  .garbo-widget {
+    position: fixed;
+    top: 96px;
+    right: 24px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
   }
 
-  .assistant-panel{
-    position:fixed; right:22px; bottom:90px; z-index:80;
-    width:360px; max-width:calc(100vw - 44px); height:480px; max-height:calc(100vh - 140px);
-    background:#fff; border:1px solid var(--line); border-radius:10px;
-    display:none; flex-direction:column; overflow:hidden;
-    box-shadow:0 16px 40px rgba(16,35,26,0.22);
-  }
-  .assistant-panel.open{ display:flex; }
-  .assistant-head{
-    background:var(--ink); color:var(--paper); padding:16px 18px;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .assistant-head b{ font-family:'Space Grotesk',sans-serif; font-size:14.5px; display:block; }
-  .assistant-head span{ font-size:12px; opacity:0.7; }
-  .assistant-close{ background:none; border:none; color:var(--paper); font-size:18px; cursor:pointer; opacity:0.75; padding:4px; }
-  .assistant-close:hover{ opacity:1; }
-
-  .assistant-messages{ flex:1; overflow-y:auto; padding:16px 18px; display:flex; flex-direction:column; gap:12px; background:var(--paper); }
-  .msg{ max-width:85%; font-size:13.5px; line-height:1.5; padding:10px 13px; border-radius:10px; }
-  .msg.bot{ align-self:flex-start; background:#fff; border:1px solid var(--line); border-bottom-left-radius:3px; }
-  .msg.user{ align-self:flex-end; background:var(--ink); color:var(--paper); border-bottom-right-radius:3px; }
-  .msg.typing{ align-self:flex-start; display:flex; gap:4px; padding:12px 14px; }
-  .msg.typing span{ width:5px; height:5px; border-radius:50%; background:var(--text-dim); opacity:0.5; animation:blink 1.2s infinite; }
-  .msg.typing span:nth-child(2){ animation-delay:.2s; }
-  .msg.typing span:nth-child(3){ animation-delay:.4s; }
-  @keyframes blink{ 0%,80%,100%{ opacity:.3 } 40%{ opacity:1 } }
-
-  .assistant-suggest{ display:flex; flex-wrap:wrap; gap:6px; padding:0 18px 12px; background:var(--paper); }
-  .assistant-suggest button{
-    font-size:12px; border:1px solid var(--line); background:#fff; border-radius:999px; padding:6px 11px; cursor:pointer;
+  .garbo-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--paper);
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    pointer-events: none;
   }
 
-  .assistant-input-row{ display:flex; gap:8px; padding:14px; border-top:1px solid var(--line); background:#fff; }
-  .assistant-input-row input{
-    flex:1; border:1px solid var(--line); border-radius:999px; padding:10px 14px; font-size:13.5px; font-family:inherit;
+  /* Floating button */
+  .garbo-button {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
   }
-  .assistant-input-row button{
-    width:38px; height:38px; border-radius:50%; border:none; background:var(--ink); color:var(--paper);
-    cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+
+  .garbo-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
   }
-  .assistant-input-row button:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  /* Chat window */
+  .garbo-chat {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 350px;
+    height: 470px;
+
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+
+    box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+  }
+
+  .garbo-chat.open {
+    display: flex;
+  }
+
+  /* Header */
+  .garbo-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .garbo-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .garbo-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+
+    background: var(--paper);
+    color: var(--ink);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 700;
+  }
+
+  .garbo-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+  }
+
+  .garbo-status {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+
+  .garbo-close {
+    background: none;
+    border: none;
+    color: var(--paper);
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  /* Messages */
+  .garbo-messages {
+    flex: 1;
+    padding: 16px;
+
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    background: var(--paper);
+  }
+
+  .garbo-message {
+    max-width: 82%;
+    padding: 10px 13px;
+
+    border-radius: 12px;
+
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+  .garbo-message.bot {
+    align-self: flex-start;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+
+  .garbo-message.user {
+    align-self: flex-end;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* Quick questions */
+  .garbo-quick {
+    padding: 10px 12px;
+
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+
+    border-top: 1px solid var(--line);
+  }
+
+  .garbo-quick button {
+    border: 1px solid var(--line);
+    background: #fff;
+
+    padding: 7px 10px;
+    border-radius: 999px;
+
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .garbo-quick button:hover {
+    background: var(--paper-dim);
+  }
+
+  /* Input */
+  .garbo-input-area {
+    display: flex;
+    gap: 8px;
+
+    padding: 10px;
+
+    border-top: 1px solid var(--line);
+    background: #fff;
+  }
+
+  .garbo-input {
+    flex: 1;
+
+    border: 1px solid var(--line);
+    border-radius: 999px;
+
+    padding: 10px 13px;
+
+    font-family: inherit;
+    font-size: 13px;
+
+    outline: none;
+  }
+
+  .garbo-input:focus {
+    border-color: var(--ink);
+  }
+
+  .garbo-send {
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: var(--ink);
+    color: var(--paper);
+
+    cursor: pointer;
+  }
+
+  .garbo-send:hover {
+    background: var(--ink-soft);
+  }
+
+  /* Mobile: smaller offset for the button, and the chat window docks to the
+     bottom of the screen instead of dropping down from the corner button,
+     since a 350px popover won't fit below it on narrow screens */
+  @media (max-width: 500px) {
+    .garbo-widget {
+      top: 76px;
+      right: 14px;
+    }
+
+    .garbo-chat {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      top: auto;
+      bottom: 14px;
+      width: auto;
+      height: 460px;
+    }
+  }
 
   /* ---------- THROW TO BIN & 60% THRESHOLD STYLES ---------- */
   .result-img{
@@ -843,8 +1034,6 @@
     .cat-grid{ grid-template-columns:repeat(2,1fr); }
     .analyze-wrap, .result-wrap, .nav-wrap{ grid-template-columns:1fr; }
     nav.links{ display:none; }
-    .assistant-panel{ right:12px; bottom:82px; }
-    .assistant-launcher{ right:16px; bottom:16px; }
   }
 </style>
 </head>
@@ -1207,7 +1396,7 @@
         </div>
         <h3>Tips for a clean read</h3>
         <p style="font-size:13.5px; color:var(--text-dim); line-height:1.6;">
-          Fill most of the frame with the item, avoid shadows across it, and keep the background plain where possible. Stuck on where something goes? Open the assistant in the bottom right — it knows the sorting rules and the campus map.
+          Fill most of the frame with the item, avoid shadows across it, and keep the background plain where possible. Stuck on where something goes? Open the Garbo assistant in the top right — it knows the sorting rules and the campus map.
         </p>
       </div>
     </div>
@@ -1449,25 +1638,108 @@
 
 </main>
 
-<!-- ============ ASSISTANT (chatbot) ============ -->
-<button class="assistant-launcher" id="assistant-launcher" aria-label="Open assistant">
-  💬<span class="badge"></span>
-</button>
+<!-- ============ GARBO CHATBOT ============ -->
+<div class="garbo-widget">
 
-<div class="assistant-panel" id="assistant-panel">
-  <div class="assistant-head">
-    <div>
-      <b>WasteWatch Assistant</b>
-      <span>Sorting rules + LPU campus directions</span>
+  <!-- Chat window -->
+  <div class="garbo-chat" id="garbo-chat">
+
+    <div class="garbo-header">
+
+      <div class="garbo-title">
+
+        <div class="garbo-avatar">
+          G
+        </div>
+
+        <div>
+          <div class="garbo-name">Garbo</div>
+          <div class="garbo-status">WasteWatch Assistant</div>
+        </div>
+
+      </div>
+
+      <button class="garbo-close" onclick="toggleGarbo()">
+        ×
+      </button>
+
     </div>
-    <button class="assistant-close" id="assistant-close" aria-label="Close assistant">✕</button>
+
+
+    <!-- Messages -->
+    <div class="garbo-messages" id="garbo-messages">
+
+      <div class="garbo-message bot">
+        Hi! 👋 I'm Garbo, your WasteWatch assistant.
+        Ask me anything about waste disposal, recycling,
+        or using WasteWatch.
+      </div>
+
+      <div class="garbo-message bot">
+        For example, you can ask:
+        <br><br>
+        • Where should I throw a plastic bottle?
+        <br>
+        • What is e-waste?
+        <br>
+        • How do I report a full bin?
+      </div>
+
+    </div>
+
+
+    <!-- Quick questions -->
+    <div class="garbo-quick">
+
+      <button onclick="garboQuick('Where should plastic go?')">
+        Plastic
+      </button>
+
+      <button onclick="garboQuick('Where should glass go?')">
+        Glass
+      </button>
+
+      <button onclick="garboQuick('What is e-waste?')">
+        E-Waste
+      </button>
+
+    </div>
+
+
+    <!-- Input -->
+    <div class="garbo-input-area">
+
+      <input
+        type="text"
+        id="garbo-input"
+        class="garbo-input"
+        placeholder="Ask Garbo..."
+        onkeydown="if(event.key === 'Enter') sendGarboMessage()"
+      >
+
+      <button
+        class="garbo-send"
+        onclick="sendGarboMessage()"
+      >
+        ➤
+      </button>
+
+    </div>
+
   </div>
-  <div class="assistant-messages" id="assistant-messages"></div>
-  <div class="assistant-suggest" id="assistant-suggest"></div>
-  <div class="assistant-input-row">
-    <input type="text" id="assistant-input" placeholder="Ask about a bin, or how to get somewhere…" autocomplete="off">
-    <button id="assistant-send" aria-label="Send">↑</button>
-  </div>
+
+
+  <!-- Floating button -->
+  <button
+    class="garbo-button"
+    onclick="toggleGarbo()"
+    aria-label="Open Garbo chatbot"
+  >
+    ♻️
+  </button>
+
+  <span class="garbo-label">Garbo</span>
+
 </div>
 
 <!-- ============ SUPABASE SQL SCHEMA MODAL ============ -->
@@ -3000,100 +3272,184 @@ CREATE POLICY "Full Access For App" ON public.user_images FOR ALL USING (true);<
   syncFromSupabase();
 
   // ---------------------------------------------------------------
-  // Assistant chatbot — Calls our secure server-side API `/api/chat`
+  // GARBO CHATBOT
   // ---------------------------------------------------------------
-  const launcher = document.getElementById('assistant-launcher');
-  const panel = document.getElementById('assistant-panel');
-  const messagesEl = document.getElementById('assistant-messages');
-  const inputEl = document.getElementById('assistant-input');
-  const sendBtn = document.getElementById('assistant-send');
-  const suggestEl = document.getElementById('assistant-suggest');
 
-  let chatHistory = [];
-  let panelOpened = false;
+  function toggleGarbo() {
 
-  launcher.addEventListener('click', () => {
-    panel.classList.toggle('open');
-    if (panel.classList.contains('open') && !panelOpened){
-      panelOpened = true;
-      addMessage('bot', "Hi! I'm the WasteWatch assistant. Ask me where an item goes, or how to get somewhere on the LPU campus.");
-      renderSuggestions();
-    }
-  });
-  document.getElementById('assistant-close').addEventListener('click', () => panel.classList.remove('open'));
+    const chat = document.getElementById('garbo-chat');
 
-  function renderSuggestions(){
-    const suggestions = [
-      "Where does a chip packet go?",
-      "Where do old clothes or shoes go?",
-      "How do I get from the Main Gate to Block 34?",
-      "Nearest e-waste bin from the Library?"
-    ];
-    suggestEl.innerHTML = suggestions.map(s => `<button type="button">${s}</button>`).join('');
-    suggestEl.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        inputEl.value = btn.textContent;
-        sendMessage();
-      });
-    });
-  }
+    chat.classList.toggle('open');
 
-  function addMessage(role, text){
-    const div = document.createElement('div');
-    div.className = 'msg ' + role;
-    div.textContent = text;
-    messagesEl.appendChild(div);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-    return div;
-  }
-
-  function addTypingIndicator(){
-    const div = document.createElement('div');
-    div.className = 'msg bot typing';
-    div.innerHTML = '<span></span><span></span><span></span>';
-    messagesEl.appendChild(div);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-    return div;
-  }
-
-  sendBtn.addEventListener('click', sendMessage);
-  inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-
-  async function sendMessage(){
-    const text = inputEl.value.trim();
-    if (!text) return;
-    inputEl.value = '';
-    suggestEl.innerHTML = '';
-    addMessage('user', text);
-    chatHistory.push({ role:'user', content: text });
-
-    sendBtn.disabled = true;
-    const typing = addTypingIndicator();
-
-    try{
-      const reply = await callAssistant(chatHistory);
-      typing.remove();
-      addMessage('bot', reply);
-      chatHistory.push({ role:'assistant', content: reply });
-    }catch(err){
-      typing.remove();
-      addMessage('bot', "I couldn't reach the assistant just now — please try again in a moment.");
-      console.error(err);
-    }finally{
-      sendBtn.disabled = false;
+    if (chat.classList.contains('open')) {
+      setTimeout(() => {
+        document.getElementById('garbo-input').focus();
+      }, 100);
     }
   }
 
-  async function callAssistant(history){
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: history
-      })
-    });
-    const data = await response.json();
-    return data.reply || data.text || "Sorry, I didn't catch that — could you rephrase?";
+
+  function addGarboMessage(message, sender) {
+
+    const messages = document.getElementById('garbo-messages');
+
+    const div = document.createElement('div');
+
+    div.className = 'garbo-message ' + sender;
+
+    div.textContent = message;
+
+    messages.appendChild(div);
+
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+
+  function garboQuick(question) {
+
+    document.getElementById('garbo-input').value = question;
+
+    sendGarboMessage();
+  }
+
+
+  function getGarboResponse(message) {
+
+    const text = message.toLowerCase();
+
+
+    // PLASTIC
+    if (
+      text.includes('plastic') ||
+      text.includes('bottle') ||
+      text.includes('polythene')
+    ) {
+      return "Plastic items generally go into the Dry Waste Bin. Empty and rinse containers before disposal.";
+    }
+
+
+    // PAPER
+    if (
+      text.includes('paper') ||
+      text.includes('cardboard') ||
+      text.includes('box')
+    ) {
+      return "Paper and cardboard should go into the Dry / Recyclable Bin. Flatten cardboard boxes when possible.";
+    }
+
+
+    // GLASS
+    if (
+      text.includes('glass') ||
+      text.includes('jar')
+    ) {
+      return "Glass bottles and jars should go into the Glass Recycling Bin. Handle broken glass carefully.";
+    }
+
+
+    // METAL
+    if (
+      text.includes('metal') ||
+      text.includes('can') ||
+      text.includes('aluminium') ||
+      text.includes('aluminum')
+    ) {
+      return "Metal cans and containers should go into the Dry Waste Bin. Empty them before disposal.";
+    }
+
+
+    // ORGANIC
+    if (
+      text.includes('food') ||
+      text.includes('vegetable') ||
+      text.includes('fruit') ||
+      text.includes('organic') ||
+      text.includes('compost')
+    ) {
+      return "Food scraps and other compostable organic waste should go into the Wet Waste Bin.";
+    }
+
+
+    // E-WASTE
+    if (
+      text.includes('e-waste') ||
+      text.includes('ewaste') ||
+      text.includes('electronic') ||
+      text.includes('phone') ||
+      text.includes('battery') ||
+      text.includes('charger')
+    ) {
+      return "Electronic waste should NOT go into regular bins. Take it to a designated E-Waste Collection Point.";
+    }
+
+
+    // ANALYZE
+    if (
+      text.includes('analyze') ||
+      text.includes('analyse') ||
+      text.includes('photo') ||
+      text.includes('image')
+    ) {
+      return "Go to 'Analyze Waste' and upload a clear photo of one waste item. WasteWatch will identify its category and recommended bin.";
+    }
+
+
+    // REPORT
+    if (
+      text.includes('report') ||
+      text.includes('full bin') ||
+      text.includes('overflow')
+    ) {
+      return "You can use 'Report a Full Bin' from the homepage. This feature is currently under development.";
+    }
+
+
+    // GREETING
+    if (
+      text.includes('hello') ||
+      text.includes('hi') ||
+      text.includes('hey')
+    ) {
+      return "Hey! 👋 I'm Garbo. Ask me about waste disposal, recycling, or WasteWatch.";
+    }
+
+
+    // HELP
+    if (
+      text.includes('help') ||
+      text.includes('what can you do')
+    ) {
+      return "I can help you understand waste categories, recycling and which bin different waste belongs in.";
+    }
+
+
+    return "I'm not sure about that yet. Try asking me something like 'Where should I throw a plastic bottle?'";
+  }
+
+
+  function sendGarboMessage() {
+
+    const input = document.getElementById('garbo-input');
+
+    const message = input.value.trim();
+
+    if (!message) return;
+
+
+    // Show user's message
+    addGarboMessage(message, 'user');
+
+    input.value = '';
+
+
+    // Generate Garbo's response
+    setTimeout(() => {
+
+      const response = getGarboResponse(message);
+
+      addGarboMessage(response, 'bot');
+
+    }, 400);
   }
 </script>
 
